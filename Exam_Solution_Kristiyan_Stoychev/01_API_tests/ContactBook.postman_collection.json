@@ -1,0 +1,312 @@
+{
+	"info": {
+		"_postman_id": "0ee11100-51ed-4677-9e8a-988a05de83b6",
+		"name": "ContactBook",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "List contacts and assert that the first contact is “Steve Jobs”",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status text is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"First contact is Steve Jobs\", () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.firstName).to.eql(\"Steve\");\r",
+							"    pm.expect(responseJson.lastName).to.eql(\"Jobs\"); \r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://contactbook.kishy.repl.co/api/contacts/1",
+					"protocol": "https",
+					"host": [
+						"contactbook",
+						"kishy",
+						"repl",
+						"co"
+					],
+					"path": [
+						"api",
+						"contacts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find contacts by keyword “albert” and assert that the first result holds “Albert Einstein” ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status text is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"The search result is Albert Einstein, after searching by albert\", () => {\r",
+							"    var data = JSON.parse(responseBody);\r",
+							"    var contactFirstName = data[0].firstName;\r",
+							"    var contactLatName = data[0].lastName;\r",
+							"    \r",
+							"    pm.expect(contactFirstName).is.eql(\"Albert\");\r",
+							"    pm.expect(contactLatName).is.eql(\"Einstein\");\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://contactbook.kishy.repl.co/api/contacts/search/albert",
+					"protocol": "https",
+					"host": [
+						"contactbook",
+						"kishy",
+						"repl",
+						"co"
+					],
+					"path": [
+						"api",
+						"contacts",
+						"search",
+						"albert"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find contacts by keyword “missing{randnum}” and assert that the results are empt",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status text is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Result is empty\", () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.empty;\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://contactbook.kishy.repl.co/api/contacts/search/non-existing-user",
+					"protocol": "https",
+					"host": [
+						"contactbook",
+						"kishy",
+						"repl",
+						"co"
+					],
+					"path": [
+						"api",
+						"contacts",
+						"search",
+						"non-existing-user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Try to create a new contact, holding invalid data, and assert an error is returned",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status text is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cannot create contact without a first name\", () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.errMsg).to.be.eql(\"First name cannot be empty!\");\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"marie67@gmail.com\", \r\n    \"phone\":\"+1 800 200 300\", \r\n    \"comments\":\"Old friend\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://contactbook.kishy.repl.co/api/contacts/",
+					"protocol": "https",
+					"host": [
+						"contactbook",
+						"kishy",
+						"repl",
+						"co"
+					],
+					"path": [
+						"api",
+						"contacts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new contact, holding valid data, and assert the new contact is added and is properly listed in the contacts list ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status text is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contact seccesfully created\", () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.contact.firstName).to.be.eql(\"Marie\");\r",
+							"    pm.expect(responseJson.contact.lastName).to.be.eql(\"Curie\");\r",
+							"    pm.expect(responseJson.contact.email).to.be.eql(\"marie67@gmail.com\");\r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\":\"Marie\", \r\n    \"lastName\":\"Curie\", \r\n    \"email\":\"marie67@gmail.com\", \r\n    \"phone\":\"+1 800 200 300\", \r\n    \"comments\":\"Old friend\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://contactbook.kishy.repl.co/api/contacts/",
+					"protocol": "https",
+					"host": [
+						"contactbook",
+						"kishy",
+						"repl",
+						"co"
+					],
+					"path": [
+						"api",
+						"contacts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check that newly created contact is properly listed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status text is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contact is added properly to list\", () => {\r",
+							"    var data = JSON.parse(responseBody);\r",
+							"    var contactFirstName = data[0].firstName;\r",
+							"    var contactLatName = data[0].lastName;\r",
+							"    pm.expect(contactFirstName).is.eql(\"Marie\");\r",
+							"    pm.expect(contactLatName).is.eql(\"Curie\");\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://contactbook.kishy.repl.co/api/contacts/search/Marie",
+					"protocol": "https",
+					"host": [
+						"contactbook",
+						"kishy",
+						"repl",
+						"co"
+					],
+					"path": [
+						"api",
+						"contacts",
+						"search",
+						"Marie"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
